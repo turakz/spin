@@ -137,5 +137,10 @@ TODO:
         tokenize
         concactenation
         at, with bounds checking
+
+    spin::case_c
+
+        camelCase
+        spin
         
 
