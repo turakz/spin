@@ -13,6 +13,7 @@ namespace spin {
         std::unordered_map<std::string, bool> reserved_lower{
             {"a", true},
             {"an", true},
+            {"and", true},
             {"the", true},
             {"at", true},
             {"by", true},

@@ -15,7 +15,7 @@ void test_case(){
     std::string input = "";
     std::getline(std::cin, input);
     spin::string_c sc1 = input;
-    std::cout << "\n";
+    std::cout << "\nspin::transform(spin::string_c):\n\n";
     spin::transform(sc1.begin(), sc1.end(), spin::case_c("titlecase"));
     std::cout << "titlecase: " << sc1 << "\n";
     spin::transform(sc1.begin(), sc1.end(), spin::case_c("uppercase"));
@@ -23,5 +23,14 @@ void test_case(){
     spin::transform(sc1.begin(), sc1.end(), spin::case_c("lowercase"));
     std::cout << "lowercase: " << sc1 << "\n";
     spin::transform(sc1.begin(), sc1.end(), spin::case_c("snakecase"));
-    std::cout << "snakecase: " << sc1 << std::endl;
+    std::cout << "snakecase: " << sc1 << "\n";
+    std::cout << "\nspin::transform(std::string):\n\n";
+    spin::transform(input.begin(), input.end(), spin::case_c("titlecase"));
+    std::cout << "titlecase: " << input << "\n";
+    spin::transform(input.begin(), input.end(), spin::case_c("uppercase"));
+    std::cout << "uppercase: " << input << "\n";
+    spin::transform(input.begin(), input.end(), spin::case_c("lowercase"));
+    std::cout << "lowercase: " << input << "\n";
+    spin::transform(input.begin(), input.end(), spin::case_c("snakecase"));
+    std::cout << "snakecase: " << input << std::endl;
 }
