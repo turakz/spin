@@ -27,17 +27,17 @@ namespace spin {
         string_c(const string_c& x)
             : buffer(nullptr), sz(x.size() + 1)
         {
-            buffer = new char[sz];
+            buffer = new value_type[sz];
             std::memcpy(buffer, x.buffer, sz);
             buffer[sz - 1] = '\0';
         }
         //destructor
         ~string_c() { delete[] buffer; }
         //constructor from literal
-        string_c(const char* x)
+        string_c(const_pointer x)
             : buffer(nullptr), sz(std::strlen(x) + 1)
         {
-            buffer = new char[sz];
+            buffer = new value_type[sz];
             std::memcpy(buffer, x, sz);
             buffer[sz - 1] = '\0';
         }
@@ -45,7 +45,7 @@ namespace spin {
         string_c(const std::string& x)
             : buffer(nullptr), sz(x.size() + 1)
         {
-            buffer = new char[sz];
+            buffer = new value_type[sz];
             std::memcpy(buffer, x.data(), sz);
             buffer[sz - 1] = '\0';
         }
@@ -54,7 +54,7 @@ namespace spin {
             if (this == &x) return *this;
             if (buffer) { delete[] buffer; sz = 0; }
             sz = x.size() + 1;
-            buffer = new char[sz];
+            buffer = new value_type[sz];
             std::memcpy(buffer, x.buffer, sz);
             buffer[sz - 1] = '\0';
             return *this;
