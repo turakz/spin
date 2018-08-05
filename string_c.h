@@ -11,15 +11,20 @@ namespace spin {
         
         using value_type         = char;
         using size_type          = std::ptrdiff_t;
-        using reference          = value_type&;
-        using const_reference    = const value_type&;
-        using pointer            = value_type*;
-        using const_pointer      = const value_type*;
+        using reference          = char&;
+        using const_reference    = const char&;
+        using pointer            = char*;
+        using const_pointer      = const char*;
         using iterator           = pointer;
         using const_iterator     = const_pointer;
 
         pointer buffer;
         size_type sz;
+        //move
+        string_c(string_c&& x)
+            : buffer(x.buffer), sz(x.size()){
+                x.~string_c();
+            }
         //default
         string_c()
             : buffer(nullptr), sz(0){/**/}
@@ -27,36 +32,56 @@ namespace spin {
         string_c(const string_c& x)
             : buffer(nullptr), sz(x.size() + 1)
         {
-            buffer = new value_type[sz];
-            std::copy(x.buffer, x.buffer+sz, buffer);
-            buffer[sz - 1] = '\0';
+            buffer = (pointer)new value_type[sz];
+            for (size_type i = 0; i != sz; ++i){
+                buffer[i] = value_type(x[i]);
+            }
+            buffer[sz - 1] = value_type('\0');
         }
         //destructor
-        ~string_c() { if (buffer) { delete[] buffer;} }
+        ~string_c() {
+            if (buffer) {
+                for (int i = 0; i != sz; ++i){
+                    buffer[i].~value_type();
+                }
+                delete[] buffer;
+            }
+        }
         //constructor from literal
         string_c(const_pointer x)
             : buffer(nullptr), sz(std::strlen(x) + 1)
         {
-            buffer = new value_type[sz];
-            std::copy(x, x+sz, buffer);
-            buffer[sz - 1] = '\0';
+            buffer = (pointer)new value_type[sz];
+            for (size_type i = 0; i != sz; ++i){
+                buffer[i] = value_type(std::move(x[i]));
+            }
+            buffer[sz-1] = value_type(std::move('\0'));
         }
         //constructor from std::string
         string_c(const std::string& x)
             : buffer(nullptr), sz(x.size() + 1)
         {
-            buffer = new value_type[sz];
-            std::copy(x.begin(), x.begin()+x.size(), buffer);
-            buffer[sz - 1] = '\0';
+            buffer = (pointer)new value_type[sz];
+            for (size_type i = 0; i != sz; ++i){
+                buffer[i] = value_type(x[i]);
+            }
+            buffer[sz-1] = value_type('\0');
         }
         //SemiRegular
         string_c& operator=(const string_c& x){
             if (this == &x) return *this;
-            if (buffer) { delete[] buffer; sz = 0; }
+            if (buffer) {
+                for (int i = 0; i != sz; ++i){
+                    buffer[i].~value_type();
+                }
+                delete[] buffer;
+            }
             sz = x.size() + 1;
-            buffer = new value_type[sz];
-            std::copy(x.buffer, x.buffer+x.sz, buffer);
-            buffer[sz - 1] = '\0';
+            buffer = (pointer)new value_type[sz];
+            for (size_type i = 0; i != sz; ++i){
+                buffer[i] = value_type(x[i]);
+            }
+            buffer[sz-1] = value_type('\0');
             return *this;
         }
         //Regular
@@ -128,7 +153,7 @@ namespace spin {
         bool empty() { return size() == 0; }
         void clear(){
             if (buffer) {
-                std::fill(buffer, buffer+sz, 0);
+                std::fill(buffer, buffer+sz, value_type('\0'));
             }
         }
         inline
