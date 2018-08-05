@@ -28,17 +28,17 @@ namespace spin {
             : buffer(nullptr), sz(x.size() + 1)
         {
             buffer = new value_type[sz];
-            std::memcpy(buffer, x.buffer, sz);
+            std::copy(x.buffer, x.buffer+sz, buffer);
             buffer[sz - 1] = '\0';
         }
         //destructor
-        ~string_c() { delete[] buffer; }
+        ~string_c() { if (buffer) { delete[] buffer;} }
         //constructor from literal
         string_c(const_pointer x)
             : buffer(nullptr), sz(std::strlen(x) + 1)
         {
             buffer = new value_type[sz];
-            std::memcpy(buffer, x, sz);
+            std::copy(x, x+sz, buffer);
             buffer[sz - 1] = '\0';
         }
         //constructor from std::string
@@ -46,7 +46,7 @@ namespace spin {
             : buffer(nullptr), sz(x.size() + 1)
         {
             buffer = new value_type[sz];
-            std::memcpy(buffer, x.data(), sz);
+            std::copy(x.begin(), x.begin()+x.size(), buffer);
             buffer[sz - 1] = '\0';
         }
         //SemiRegular
@@ -55,7 +55,7 @@ namespace spin {
             if (buffer) { delete[] buffer; sz = 0; }
             sz = x.size() + 1;
             buffer = new value_type[sz];
-            std::memcpy(buffer, x.buffer, sz);
+            std::copy(x.buffer, x.buffer+x.sz, buffer);
             buffer[sz - 1] = '\0';
             return *this;
         }
@@ -126,8 +126,11 @@ namespace spin {
         size_type size() const { return sz; }
         inline
         bool empty() { return size() == 0; }
-        inline
-        void clear(){ if (buffer) { delete[] buffer; sz = 0; } }
+        void clear(){
+            if (buffer) {
+                std::fill(buffer, buffer+sz, 0);
+            }
+        }
         inline
         iterator begin() { return buffer; }
         inline
