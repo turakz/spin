@@ -30,6 +30,7 @@ namespace spin {
             : buffer(nullptr), sz(0){/**/}
         //copy
         string_c(const string_c& x)
+             //add one to size because sequence is null-terminated
             : buffer(nullptr), sz(x.size() + 1)
         {
             buffer = (pointer)new value_type[sz];
@@ -41,9 +42,6 @@ namespace spin {
         //destructor
         ~string_c() {
             if (buffer) {
-                for (int i = 0; i != sz; ++i){
-                    buffer[i].~value_type();
-                }
                 delete[] buffer;
             }
         }
@@ -53,9 +51,9 @@ namespace spin {
         {
             buffer = (pointer)new value_type[sz];
             for (size_type i = 0; i != sz; ++i){
-                buffer[i] = value_type(std::move(x[i]));
+                buffer[i] = value_type(x[i]);
             }
-            buffer[sz-1] = value_type(std::move('\0'));
+            buffer[sz-1] = value_type('\0');
         }
         //constructor from std::string
         string_c(const std::string& x)
@@ -71,12 +69,9 @@ namespace spin {
         string_c& operator=(const string_c& x){
             if (this == &x) return *this;
             if (buffer) {
-                for (int i = 0; i != sz; ++i){
-                    buffer[i].~value_type();
-                }
                 delete[] buffer;
             }
-            sz = x.size() + 1;
+            sz = x.size();
             buffer = (pointer)new value_type[sz];
             for (size_type i = 0; i != sz; ++i){
                 buffer[i] = value_type(x[i]);
