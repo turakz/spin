@@ -33,11 +33,11 @@ namespace spin {
              //add one to size because sequence is null-terminated
             : buffer(nullptr), sz(x.size() + 1)
         {
-            buffer = (pointer)new value_type[sz];
+            buffer = new value_type[sz];
             for (size_type i = 0; i != sz; ++i){
-                buffer[i] = value_type(x[i]);
+                buffer[i] = x[i];
             }
-            buffer[sz - 1] = value_type('\0');
+            buffer[sz - 1] = '\0';
         }
         //destructor
         ~string_c() {
@@ -49,21 +49,21 @@ namespace spin {
         string_c(const_pointer x)
             : buffer(nullptr), sz(std::strlen(x) + 1)
         {
-            buffer = (pointer)new value_type[sz];
+            buffer = new value_type[sz];
             for (size_type i = 0; i != sz; ++i){
-                buffer[i] = value_type(x[i]);
+                buffer[i] = x[i];
             }
-            buffer[sz-1] = value_type('\0');
+            buffer[sz-1] = '\0';
         }
         //constructor from std::string
         string_c(const std::string& x)
             : buffer(nullptr), sz(x.size() + 1)
         {
-            buffer = (pointer)new value_type[sz];
+            buffer = new value_type[sz];
             for (size_type i = 0; i != sz; ++i){
-                buffer[i] = value_type(x[i]);
+                buffer[i] = x[i];
             }
-            buffer[sz-1] = value_type('\0');
+            buffer[sz-1] = '\0';
         }
         //SemiRegular
         string_c& operator=(const string_c& x){
@@ -71,12 +71,13 @@ namespace spin {
             if (buffer) {
                 delete[] buffer;
             }
+            //size() returns length of sequence + 1 (for null-termination)
             sz = x.size();
-            buffer = (pointer)new value_type[sz];
+            buffer = new value_type[sz];
             for (size_type i = 0; i != sz; ++i){
-                buffer[i] = value_type(x[i]);
+                buffer[i] = x[i];
             }
-            buffer[sz-1] = value_type('\0');
+            buffer[sz-1] = '\0';
             return *this;
         }
         //Regular
@@ -89,7 +90,7 @@ namespace spin {
             return true;
         }
         friend
-        bool operator==(const string_c& x, const char* y){
+        bool operator==(const string_c& x, const_pointer y){
             if (x.size() != std::strlen(y)) return false;
             for (size_type i = 0; i != x.size(); ++i){
                 if (x[i] != y[i]) return false;
@@ -148,7 +149,7 @@ namespace spin {
         bool empty() { return size() == 0; }
         void clear(){
             if (buffer) {
-                std::fill(buffer, buffer+sz, value_type('\0'));
+                std::fill(buffer, buffer+sz, '\0');
             }
         }
         inline
